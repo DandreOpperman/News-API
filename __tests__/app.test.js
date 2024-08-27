@@ -31,14 +31,14 @@ describe('/api/topics',()=>{
 })
 
 describe('/api',()=>{
-    test('this end point should respond with a list of all other endpoints available',()=>{
+    test('200: this end point should respond with an object containing a key of endpoints, that has a value of all other endpoints available',()=>{
         return request(app)
         .get('/api')
         .expect(200)
-        .then(({body}) =>{
-            expect(body).toHaveProperties('GET /api')
-            expect(body).toHaveProperties('GET /api/topics')
-            expect(body).toHaveProperties('GET /api/articles')
+        .then(({body:{endpoints}}) =>{
+            expect(endpoints).toHaveProperty('GET /api')
+            expect(endpoints).toHaveProperty('GET /api/topics')
+            expect(endpoints).toHaveProperty('GET /api/articles')
         })
     })
 })
