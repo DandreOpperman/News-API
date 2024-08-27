@@ -74,3 +74,63 @@ describe('/api/articles/:article_id', () => {
         });
     });
 })
+describe('/api/articles',()=>{
+    test('GET:200 response array should contains data for all articles',()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body: {articles}}) =>{
+            expect(articles.length).toBe(13)
+            })
+        })
+    test('response array should contain author, title, article_id, topic, created_at, votes and article_img_url properties',()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body: {articles}}) =>{
+            articles.forEach((article)=>{
+                expect(article).toHaveProperty('author')
+                expect(article).toHaveProperty('title')
+                expect(article).toHaveProperty('article_id')
+                expect(article).toHaveProperty('topic')
+                expect(article).toHaveProperty('created_at')
+                expect(article).toHaveProperty('votes')
+                expect(article).toHaveProperty('article_img_url')})
+            })
+        })
+    test('there should be no body property on any of the arrticles in the array',()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body: {articles}}) =>{
+            articles.forEach((article)=>{
+                expect(article).not.toHaveProperty('body')
+            })
+        })
+    })
+    test('there should be a comment_count property on each arrticle in the array that has a value equal to the number of comments in the comments table that have the same article_id as the article',()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body: {articles}}) =>{
+            articles.forEach((article)=>{
+                expect(article).toHaveProperty('comment_count')
+                let testCommentId = 1
+                const comments = require('../db/data/test-data/comments')
+                let testCount =0
+                comments.forEach((comment)=>{if(comment.article_id === testCommentId){testCount++}})
+                    expect(article.comment_count === testCount)
+            })
+        })
+    })
+    test('the array should be sorted by date in descending order',()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body: {articles}}) =>{
+        expect(articles).toBeSortedBy('created_at', {
+            descending: true,
+          })
+      });
+    })
+})
