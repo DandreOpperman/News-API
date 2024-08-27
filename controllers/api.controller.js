@@ -1,9 +1,4 @@
-const{showAllEndpoints}=require('../models/api.model')
-exports.getEndPoints = (req, res)=>{
-    showAllEndpoints().then((endpoints)=>{
-        res.status(200).send({ endpoints });
-    })
-    .catch((err)=>{
-       next(err)
-      })
-}
+const endpoints = require("../endpoints.json");
+exports.getEndPoints = (req, res) => {
+  res.status(200).send({ endpoints });
+};
