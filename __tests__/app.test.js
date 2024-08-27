@@ -29,3 +29,16 @@ describe('/api/topics',()=>{
         })
     })
 })
+
+describe('/api',()=>{
+    test('200: this end point should respond with an object containing a key of endpoints, that has a value of all other endpoints available',()=>{
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body:{endpoints}}) =>{
+            expect(endpoints).toHaveProperty('GET /api')
+            expect(endpoints).toHaveProperty('GET /api/topics')
+            expect(endpoints).toHaveProperty('GET /api/articles')
+        })
+    })
+})
