@@ -82,7 +82,7 @@ describe("/api/articles/:article_id", () => {
         expect(message).toBe("Bad request");
       });
   });
-  test.only("PATCH:200 will update the votes of an article using an inc_votes object, increasing the votes by the value of the inc_votes key", () => {
+  test("PATCH:200 will update the votes of an article using an inc_votes object, increasing the votes by the value of the inc_votes key", () => {
     const newVotes = { inc_votes: 5 };
     return request(app)
       .patch("/api/articles/1")
@@ -92,7 +92,7 @@ describe("/api/articles/:article_id", () => {
         expect(article.votes).toBe(105);
       });
   });
-  test.only("PATCH:200 will update the votes of an article if the increse in votes is negative, representing a decrease in votes)", () => {
+  test("PATCH:200 will update the votes of an article if the increse in votes is negative, representing a decrease in votes)", () => {
     const newVotes = { inc_votes: -5 };
     return request(app)
       .patch("/api/articles/1")
@@ -102,7 +102,7 @@ describe("/api/articles/:article_id", () => {
         expect(article.votes).toBe(95);
       });
   });
-  test.only("PATCH:404 sends an appropriate status and error message when given a valid but non-existent article_id", () => {
+  test("PATCH:404 sends an appropriate status and error message when given a valid but non-existent article_id", () => {
     const newVotes = { inc_votes: -5 };
     return request(app)
       .patch("/api/articles/999")
@@ -112,7 +112,7 @@ describe("/api/articles/:article_id", () => {
         expect(message).toBe("article_id not found");
       });
   });
-  test.only("PATCH:400 sends an appropriate status and error message when given an invalid article_id", () => {
+  test("PATCH:400 sends an appropriate status and error message when given an invalid article_id", () => {
     const newVotes = { inc_votes: -5 };
     return request(app)
       .patch("/api/articles/destroyeverything")
@@ -122,7 +122,7 @@ describe("/api/articles/:article_id", () => {
         expect(message).toBe("Bad request");
       });
   });
-  test.only("PATCH:200 if the article does not have a votes key, the article will gain one with a value equal to the new votes", () => {
+  test("PATCH:200 if the article does not have a votes key, the article will gain one with a value equal to the new votes", () => {
     const newVotes = { inc_votes: 10 };
     return request(app)
       .patch("/api/articles/2")
@@ -133,7 +133,7 @@ describe("/api/articles/:article_id", () => {
         expect(article.votes).toBe(10);
       });
   });
-  test.only("Patch:400 sends an appropriate status and error message if the newVotes object contains an invalid value type", () => {
+  test("Patch:400 sends an appropriate status and error message if the newVotes object contains an invalid value type", () => {
     const newVotes = { inc_votes: "macaronni" };
     return request(app)
       .patch("/api/articles/3")
