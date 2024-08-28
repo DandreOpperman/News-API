@@ -9,19 +9,13 @@ exports.selectArticleById = (article_id) => {
   };
 
   exports.selectArticles = () => {
-    let queryStr = 'SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url FROM articles'
+    let queryStr = 'SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url'
 
     queryStr += ` ORDER BY created_at DESC;`
+
     return db
       .query(queryStr)
       .then(({rows}) => {
-        rows.forEach((article)=>{
-          let count = 0
-          let articleId = article.article_id
-          const comments = require('../db/data/test-data/comments')
-          comments.forEach((comment)=>{if(comment.article_id === articleId){count++}})
-            article.comment_count = count
-        })
         return rows;
       });
   };
