@@ -43,11 +43,11 @@
       ]
     }
   },
-  "GET /api/articles/:article_id/comments" : {
-   "description": "serves comments from the comments table that have an article_id that matches the parametric endpoint",
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves comments from the comments table that have an article_id that matches the parametric endpoint",
     "queries": [],
     "exampleResponse": {
-      "comments":[
+      "comments": [
         {
           "comment_id": 5,
           "votes": 0,
@@ -59,15 +59,15 @@
       ]
     }
   },
-  "POST /api/articles/:article_id/comments" : {
-   "description": "posts a comment to the comments table, the comment has an article_id that matches the parametric endpoint, then returns the comment",
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment to the comments table, the comment has an article_id that matches the parametric endpoint, then returns the comment",
     "queries": [],
-    "exampleInput":{
+    "exampleInput": {
       "username": "icellusedkars",
       "body": "I like this content, thank you for your hard work"
     },
     "exampleResponse": {
-      "comments":[
+      "comments": [
         {
           "comment_id": 19,
           "votes": 0,
@@ -80,7 +80,7 @@
     }
   },
   "PATCH /api/articles/:article_id": {
-    "description":"updates an article's votes value using an object that contains a modifier value",
+    "description": "updates an article's votes value using an object that contains a modifier value",
     "queries": [],
     "exampleInput": { "inc_votes": 5 },
     "exampleResponse": {
@@ -96,5 +96,9 @@
         }
       ]
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment based on the comment_id parametric endpoint",
+    "queries": []
   }
 }
