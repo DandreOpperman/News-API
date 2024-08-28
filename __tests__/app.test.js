@@ -26,15 +26,17 @@ describe("/api/topics", () => {
         });
       });
   });
-  test("if a url is inputed that does not exist a relevant error message should be returned", () => {
-    return request(app)
-      .get("/api/thisEndPointDoesNotExist")
-      .expect(404)
-      .then(({ body: { message } }) => {
-        expect(message).toBe("Route not found");
-      });
-  });
 });
+describe("non-routed path",()=>{
+    test("if a url is inputed that does not exist a relevant error message should be returned", () => {
+        return request(app)
+          .get("/api/thisEndPointDoesNotExist")
+          .expect(404)
+          .then(({ body: { message } }) => {
+            expect(message).toBe("Route not found");
+          });
+      });
+})
 
 describe("/api", () => {
   test("GET:200 this end point should respond with an object containing a key of endpoints, that has a value of all other endpoints available", () => {
@@ -151,6 +153,7 @@ describe("/api/articles/:article_id/comments", () => {
           expect(comment).toHaveProperty('author');
           expect(comment).toHaveProperty('body');
           expect(comment).toHaveProperty('article_id');
+          expect(comment.article_id).toBe(1)
         });
       });
   });
@@ -167,7 +170,7 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/999/comments")
       .expect(404)
       .then(({ body: { message } }) => {
-        expect(message).toBe("article does not exist");
+        expect(message).toBe("article_id not found");
       });
   });
   test("GET:400 sends an appropriate status and error message when given an invalid id", () => {
@@ -184,6 +187,33 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(200)
       .then(({ body: { comments } }) => {
         expect(comments).toEqual([]);
+      });
+  });
+  test('POST:201 inserts a new comment into the db and sends the new team back to the client', () => {
+    const newComment = {
+        username: 'icellusedkars',
+        body: 'I like this content, thank you for your hard work'
+    };
+    return request(app)
+      .post('/api/articles/2/comments')
+      .send(newComment)
+      .expect(201)
+      .then(({body:{comment}}) => {
+        expect(comment.comment_id).toBe(19)
+        expect(comment.author).toBe('icellusedkars');
+        expect(comment.body).toBe('I like this content, thank you for your hard work');
+      });
+  });
+  test('POST:400 responds with an appropriate status and error message when provided with an incomplete comment (no body)', () => {
+    const newComment = {
+        username: 'icellusedkars'
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: {message} }) => {
+        expect(message).toBe("Bad request");
       });
   });
 });

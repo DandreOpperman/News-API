@@ -12,6 +12,14 @@ exports.idErrorHandler = (err, req, res, next)=>{
       next(err)
     }
   }
+  exports.reqBodyErrorHandler = (err, req, res, next)=>{
+    if(err.code === '23502'){
+      res.status(400).send({message : 'Bad request'})
+    } else {
+      next(err)
+    }
+  }
 exports.serverErrorHandler = (err, req, res, next)=>{
+  console.log(err)
     res.status(500).send({message:'internal server error'})
 }
