@@ -1,20 +1,38 @@
-const {selectArticleById, selectArticles} = require('../models/articles.models')
+const {
+  selectArticleById,
+  selectArticles,
+  updateArticleVotes,
+} = require("../models/articles.models");
 
 exports.getArticles = (req, res, next) => {
-  selectArticles().then((articles) => {
-    res.status(200).send({ articles });
-  })
-  .catch((err)=>{
-    next(err)
-  })
+  selectArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getArticleById = (req, res, next) => {
-    const {article_id} = req.params;
-    selectArticleById(article_id).then((article) => {
+  const { article_id } = req.params;
+  selectArticleById(article_id)
+    .then((article) => {
       res.status(200).send({ article });
     })
-    .catch((err)=>{
-      next(err)
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchArticleVotes = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { article_id } = req.params;
+  updateArticleVotes(article_id, inc_votes)
+    .then((article) => {
+      if (article.votes) res.status(200).send({ article });
     })
-  };
+    .catch((err) => {
+      next(err);
+    });
+};
