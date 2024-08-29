@@ -1,6 +1,5 @@
 const db = require("../db/connection");
-// const{checkExists}=require('../utils.js')
-const {checkExists } = require("../utils");
+const { checkExists } = require("../utils");
 
 exports.selectCommentsByArticleId = (article_id) => {
   const queryVals = [article_id];
@@ -23,4 +22,11 @@ exports.insertComment = (article_id, { username, body }) => {
   return Promise.all(queryProms).then((output) => {
     return output[0].rows[0];
   });
+};
+exports.removeCommentByCommentId = (comment_id) => {
+  const queryProms = [];
+  let queryStr = "DELETE FROM comments WHERE comment_id = $1 RETURNING *;";
+  queryProms.push(checkExists("comments", "comment_id", comment_id));
+  queryProms.push(db.query(queryStr, [comment_id]));
+  return Promise.all(queryProms);
 };

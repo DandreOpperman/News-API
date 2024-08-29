@@ -129,7 +129,6 @@ describe("/api/articles/:article_id", () => {
       .send(newVotes)
       .expect(200)
       .then(({ body: { article } }) => {
-        console.log(article);
         expect(article.votes).toBe(10);
       });
   });
@@ -274,6 +273,27 @@ describe("/api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/2/comments")
       .send(newComment)
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad request");
+      });
+  });
+});
+describe("/api/comments/:comment_id", () => {
+  test("DELETE:204 deletes comment that is specified by comment_id and sends no body back", () => {
+    return request(app).delete("/api/comments/3").expect(204);
+  });
+  test("DELETE:404 sends an appropriate status and error message when given a valid but non-existent comment_id", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("comment_id not found");
+      });
+  });
+  test("DELETE:400 sends an appropriate status and error message when given an invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/not-an-id")
       .expect(400)
       .then(({ body: { message } }) => {
         expect(message).toBe("Bad request");
