@@ -12,12 +12,13 @@ const {
   postComment,
   deleteCommentByCommentId,
 } = require("./controllers/comments.controllers");
-const {getUsers} = require('./controllers/users.controllers')
+const { getUsers } = require("./controllers/users.controllers");
 const {
   serverErrorHandler,
   customErrorHandler,
   idErrorHandler,
   reqBodyErrorHandler,
+  queryInputErrorHandler,
 } = require("./error");
 
 app.use(express.json());
@@ -30,11 +31,12 @@ app.patch("/api/articles/:article_id", patchArticleVotes);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postComment);
 app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
-app.get("/api/users", getUsers)
+app.get("/api/users", getUsers);
 
 app.use(customErrorHandler);
 app.use(idErrorHandler);
 app.use(reqBodyErrorHandler);
+app.use(queryInputErrorHandler);
 app.all("/*", (req, res) => {
   res.status(404).send({ message: "Route not found" });
 });
