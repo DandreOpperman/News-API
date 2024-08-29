@@ -152,7 +152,7 @@ describe("/api/articles", () => {
         expect(articles.length).toBe(13);
       });
   });
-  test("response array should contain author, title, article_id, topic, created_at, votes and article_img_url properties", () => {
+  test("GET:200 response array should contain author, title, article_id, topic, created_at, votes and article_img_url properties", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -168,7 +168,7 @@ describe("/api/articles", () => {
         });
       });
   });
-  test("there should be no body property on any of the arrticles in the array", () => {
+  test("GET:200 there should be no body property on any of the arrticles in the array", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -178,7 +178,7 @@ describe("/api/articles", () => {
         });
       });
   });
-  test("there should be a comment_count property on each arrticle in the array that has a value equal to the number of comments in the comments table that have the same article_id as the article", () => {
+  test("GET:200 there should be a comment_count property on each arrticle in the array that has a value equal to the number of comments in the comments table that have the same article_id as the article", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -188,9 +188,75 @@ describe("/api/articles", () => {
         });
       });
   });
-  test("the array should be sorted by date in descending order", () => {
+  test("GET:200 the array should defult to being sorted by date in descending order", () => {
     return request(app)
       .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("GET:200 When provided a query sort_by follwed by a valid column name (author) sorts the array by that column name", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("author", {
+          descending: true,
+        });
+      });
+  });
+  test("GET:200 When provided a query sort_by follwed by a valid column name (article_id) sorts the array by that column name", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("article_id", {
+          descending: true,
+        });
+      });
+  });
+  test("GET:200 When provided a query sort_by follwed by a valid column name (votes) sorts the array by that column name", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
+  test("GET:400 When provided a query sort_by follwed by an invalid column name (passwords)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=passwords")
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad request");
+      });
+  });
+  test("GET:200 When provided a query order followed by asc or desc sorts the array in that order (ascending or descending)", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at");
+      });
+  });
+  test("GET:200 When provided querys for sort_by and order arry should be sorted by the column name in the correct order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=desc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("title", {
+          descending: true,
+        });
+      });
+  });
+  test("GET:200 if sort_by or order queries are left blank should order and sort by the defult values (date in descending order)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=&order=")
       .expect(200)
       .then(({ body: { articles } }) => {
         expect(articles).toBeSortedBy("created_at", {
@@ -300,9 +366,9 @@ describe("/api/comments/:comment_id", () => {
       });
   });
 });
-describe('/api/users',()=>{
-    test('GET:200 response array should contains data for all users',()=>{
-        return request(app)
+describe("/api/users", () => {
+  test("GET:200 response array should contains data for all users", () => {
+    return request(app)
       .get("/api/users")
       .expect(200)
       .then(({ body: { users } }) => {
@@ -314,4 +380,4 @@ describe('/api/users',()=>{
         });
       });
   });
-})
+});
