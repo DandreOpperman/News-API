@@ -228,7 +228,7 @@ describe("/api/articles", () => {
         });
       });
   });
-  test("GET:400 When provided a query sort_by follwed by an invalid column name (passwords)", () => {
+  test("GET:400 When provided a query sort_by followed by an invalid column name (passwords) should return an appropriate status and error message", () => {
     return request(app)
       .get("/api/articles?sort_by=passwords")
       .expect(400)
@@ -262,6 +262,33 @@ describe("/api/articles", () => {
         expect(articles).toBeSortedBy("created_at", {
           descending: true,
         });
+      });
+  });
+  test("GET:400 When provided an order query follwed by an invalid input (12345) should return an appropriate status and error message", () => {
+    return request(app)
+      .get("/api/articles?order=12345")
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad request");
+      });
+  });
+  test("GET:200 if topic query is present with a valid topic, the articles array should be filtered to only contain articles that have that topic title", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(12);
+        articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+  test("GET:404 if topic query is present with an invalid topic, should return an appropriate status and error message", () => {
+    return request(app)
+      .get("/api/articles?topic=11111")
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("topic not found");
       });
   });
 });
