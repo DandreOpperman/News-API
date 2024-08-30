@@ -18,7 +18,7 @@ describe("/", () => {
     return request(app)
       .get("/")
       .then(({ body: { message } }) => {
-        expect(message).toBe("Welcome to news API!");
+        expect(message).toBe("Welcome to news API! go to /api for endpoint info");
       });
   });
 });
