@@ -25,7 +25,7 @@ To interact with this api locally you will need to carry out the following instr
  
 2) Next open the repository in a code editing software, for example visual studio code. In the __tests__ directory you will be able to see the dest driven development used to develop the API endpoints.
 
-3) Next in the root of the repository create two files, one called .env.test and one called .env.development. In the .env.test file on line one type ```PGDATABASE=nc_news_test``` and in the .env.development file on line one type ```DATABASE_URL=postgresql://postgres.byfadzxrcidgzoyhgceo:KdjWqk2kr3E259f8LL7F8G3f7@aws-0-eu-west-2.pooler.supabase.com:6543/postgres```
+3) Next in the root of the repository create two files, one called .env.test and one called .env.development. In the .env.test file on line one type ```PGDATABASE=nc_news_test``` and in the .env.development file on line one type ```DATABASE_URL=nc_news```
 
 4) check that you have node and node project manager (npm) installed by run the commands ```node -v``` and ```npm -v``` in your terminal, if it does not respond with a version number for either you can install node [here](https://nodejs.org/en/download/prebuilt-installer/current) and install npm by running ```npm install -g npm```
 
