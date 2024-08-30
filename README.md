@@ -13,7 +13,7 @@ Thank you for taking the time to view my News API. This portfolio project was ma
 * Hosting using supabase for the database and render for the website
 
 ### Access online
-To access this API online click on the following URL: [News API](https://news-api-ovyc.onrender.com/)
+To access this API online click on the following URL: [News API](https://news-api-ovyc.onrender.com)
 
 For a list of endpoints, simply type /api in the url after .com
 
