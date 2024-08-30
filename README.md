@@ -2,7 +2,7 @@
 
 ### Introduction
 
-Thank you for taking the time to view my News API. The purpose of this API is accessing application data programmatically. The intention of this project was to mimic the building of a real world backend service, which is going to provide information to the front end architecture of the next project.This portfolio project was made during a week-long sprint (26-8-2024 to 30-8-2024) during my [Northcoders](https://northcoders.com) full stack software developer bootcamp. During this week I utilised the following skills in order to finish this project:
+Thank you for taking the time to view my News API. The purpose of this API is accessing application data programmatically. The intention of this project was to mimic the building of a real world backend service, which is going to provide information to the front end architecture of the next project. This portfolio project was made during a week-long sprint (26-8-2024 to 30-8-2024) during my [Northcoders](https://northcoders.com) full stack software developer bootcamp. During this week I utilised the following skills in order to finish this project:
 
 - Javascript
 - Documentation
