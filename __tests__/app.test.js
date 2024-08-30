@@ -66,6 +66,14 @@ describe("/api/articles/:article_id", () => {
         );
       });
   });
+  test("GET:200 article should have a property of comment_count that shows the number of comments on the article",()=>{
+    return request(app)
+      .get("/api/articles/4")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.comment_count).toBe("0")
+      })
+  })
   test("GET:404 sends an appropriate status and error message when given a valid but non-existent id", () => {
     return request(app)
       .get("/api/articles/999")
