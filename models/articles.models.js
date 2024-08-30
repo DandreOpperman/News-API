@@ -3,7 +3,7 @@ const { checkValueExists, checkColumnExists } = require("../utils");
 exports.selectArticleById = (article_id) => {
   return db
     .query(
-      "SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;;",
+      "SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;;",
       [article_id]
     )
     .then(({ rows }) => {
@@ -21,23 +21,21 @@ exports.selectArticles = (sort_by, order, topic) => {
   const queryProms = [];
   const queryVals = [];
   let queryStr =
-    "SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id";
+    "SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id";
 
   if (topic) {
-    queryProms.push(checkValueExists("articles", "topic", topic));
+    queryProms.push(checkValueExists("topics", "slug", topic));
     queryVals.push(topic);
-    queryStr +=
-      " WHERE topic = $1 GROUP BY articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url";
-  } else {
-    queryStr +=
-      " GROUP BY articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url";
+    queryStr += " WHERE topic = $1";
   }
+  queryStr +=
+    " GROUP BY articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url";
+
   if (sort_by) {
     queryProms.push(checkColumnExists("articles", sort_by));
-
-    queryStr += ` ORDER BY ${sort_by};`;
+    queryStr += ` ORDER BY ${sort_by}`;
   } else {
-    queryStr += ` ORDER BY created_at;`;
+    queryStr += ` ORDER BY created_at`;
   }
 
   if (order) {
@@ -45,14 +43,11 @@ exports.selectArticles = (sort_by, order, topic) => {
       return Promise.reject({ status: 400, message: "Bad request" });
     } else {
       order = order.toUpperCase();
-      queryStr = queryStr.slice(0, -1);
       queryStr += ` ${order};`;
     }
   } else {
-    queryStr = queryStr.slice(0, -1);
     queryStr += ` DESC;`;
   }
-
   queryProms.push(db.query(queryStr, queryVals));
 
   return Promise.all(queryProms).then((output) => {

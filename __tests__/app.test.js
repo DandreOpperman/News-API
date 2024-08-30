@@ -13,6 +13,27 @@ const endpointsData = require("../endpoints.json");
 beforeEach(() => seed({ topicData, userData, articleData, commentData }));
 afterAll(() => db.end());
 
+describe("/", () => {
+  test("should return a welcome message", () => {
+    return request(app)
+      .get("/")
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Welcome to news API!");
+      });
+  });
+});
+
+describe("non-routed path", () => {
+  test("if a url is inputed that does not exist a relevant error message should be returned", () => {
+    return request(app)
+      .get("/api/thisEndPointDoesNotExist")
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Route not found");
+      });
+  });
+});
+
 describe("/api/topics", () => {
   test("GET:200 response array should contains data for all topics", () => {
     return request(app)
@@ -24,16 +45,6 @@ describe("/api/topics", () => {
           expect(topic).toHaveProperty("description");
           expect(topic).toHaveProperty("slug");
         });
-      });
-  });
-});
-describe("non-routed path", () => {
-  test("if a url is inputed that does not exist a relevant error message should be returned", () => {
-    return request(app)
-      .get("/api/thisEndPointDoesNotExist")
-      .expect(404)
-      .then(({ body: { message } }) => {
-        expect(message).toBe("Route not found");
       });
   });
 });
@@ -66,14 +77,22 @@ describe("/api/articles/:article_id", () => {
         );
       });
   });
-  test("GET:200 article should have a property of comment_count that shows the number of comments on the article",()=>{
+  test("GET:200 article should have a property of comment_count that shows the number of comments on the article", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.comment_count).toBe(11);
+      });
+  });
+  test("GET:200 article should have a property of comment_count that shows the number of comments on the article when there are no comments", () => {
     return request(app)
       .get("/api/articles/4")
       .expect(200)
       .then(({ body: { article } }) => {
-        expect(article.comment_count).toBe("0")
-      })
-  })
+        expect(article.comment_count).toBe(0);
+      });
+  });
   test("GET:404 sends an appropriate status and error message when given a valid but non-existent id", () => {
     return request(app)
       .get("/api/articles/999")
@@ -128,16 +147,6 @@ describe("/api/articles/:article_id", () => {
       .expect(400)
       .then(({ body: { message } }) => {
         expect(message).toBe("Bad request");
-      });
-  });
-  test("PATCH:200 if the article does not have a votes key, the article will gain one with a value equal to the new votes", () => {
-    const newVotes = { inc_votes: 10 };
-    return request(app)
-      .patch("/api/articles/2")
-      .send(newVotes)
-      .expect(200)
-      .then(({ body: { article } }) => {
-        expect(article.votes).toBe(10);
       });
   });
   test("Patch:400 sends an appropriate status and error message if the newVotes object contains an invalid value type", () => {
@@ -216,12 +225,12 @@ describe("/api/articles", () => {
         });
       });
   });
-  test("GET:200 When provided a query sort_by follwed by a valid column name (article_id) sorts the array by that column name", () => {
+  test("GET:200 When provided a query sort_by follwed by a valid column name (votes) sorts the array by that column name", () => {
     return request(app)
-      .get("/api/articles?sort_by=article_id")
+      .get("/api/articles?sort_by=votes")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles).toBeSortedBy("article_id", {
+        expect(articles).toBeSortedBy("votes", {
           descending: true,
         });
       });
@@ -296,7 +305,15 @@ describe("/api/articles", () => {
       .get("/api/articles?topic=11111")
       .expect(404)
       .then(({ body: { message } }) => {
-        expect(message).toBe("topic not found");
+        expect(message).toBe("slug not found");
+      });
+  });
+  test("GET:200 if topic query exists but has no articles, should return an empty array", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual([]);
       });
   });
 });
@@ -318,7 +335,7 @@ describe("/api/articles/:article_id/comments", () => {
         });
       });
   });
-  test("comments should be sorted by the date they were created at, with the most recent date coming first ", () => {
+  test("GET:200 comments should be sorted by the date they were created at, with the most recent date coming first ", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
@@ -367,12 +384,70 @@ describe("/api/articles/:article_id/comments", () => {
         );
       });
   });
+  test("POST:201 inserts a new comment into the db and sends the new team back to the client when the newComment object has additional properties", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "I like this content, thank you for your hard work",
+      givepassword: "${password}",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment.comment_id).toBe(19);
+        expect(comment.author).toBe("icellusedkars");
+        expect(comment.body).toBe(
+          "I like this content, thank you for your hard work"
+        );
+        expect(comment.givepassword).not.toBe("${password}");
+      });
+  });
   test("POST:400 responds with an appropriate status and error message when provided with an incomplete comment (no body)", () => {
     const newComment = {
       username: "icellusedkars",
     };
     return request(app)
       .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad request");
+      });
+  });
+  test("POST:404 responds with an appropriate status and error message when provided with a comment from a non existant user)", () => {
+    const newComment = {
+      username: "ImNoTrEaL",
+      body: "not a real user",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Non existent user");
+      });
+  });
+  test("POST:400 sends an appropriate status and error message when given a valid but nonexistant id)", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "I like this content, thank you for your hard work",
+    };
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Non existent user");
+      });
+  });
+  test("POST:400 sends an appropriate status and error message when given an invalid id)", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "I like this content, thank you for your hard work",
+    };
+    return request(app)
+      .post("/api/articles/NOT_A_USER_ID/comments")
       .send(newComment)
       .expect(400)
       .then(({ body: { message } }) => {
