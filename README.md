@@ -6,7 +6,7 @@ In the .env.development file you will need the following line PGDATABASE=nc_news
 
 After adding these 2 files the repo should run locally without issue.
 
-
+hosted api url = https://news-api-ovyc.onrender.com/
 --- 
 
 This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
