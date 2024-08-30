@@ -19,6 +19,13 @@ exports.reqBodyErrorHandler = (err, req, res, next) => {
     next(err);
   }
 };
+exports.userErrorHandler = (err, req, res, next) => {
+  if (err.code === "23503") {
+    res.status(404).send({ message: "Non existent user" });
+  } else {
+    next(err);
+  }
+};
 exports.queryInputErrorHandler = (err, req, res, next) => {
   if (err.code === "42703" || err.code === "42601") {
     res.status(400).send({ message: "Bad request" });
