@@ -1,8 +1,9 @@
+const cors = require("cors");
 const express = require("express");
 const app = express();
 const { getTopics } = require("./controllers/topics.controllers");
 const { getEndPoints } = require("./controllers/api.controller");
-const {welcome}=require('./controllers/welcome.controller')
+const { welcome } = require("./controllers/welcome.controller");
 const {
   getArticleById,
   getArticles,
@@ -23,6 +24,7 @@ const {
   queryInputErrorHandler,
 } = require("./error");
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/api", getEndPoints);
@@ -40,7 +42,7 @@ app.use(idErrorHandler);
 app.use(reqBodyErrorHandler);
 app.use(userErrorHandler);
 app.use(queryInputErrorHandler);
-app.all("/", welcome)
+app.all("/", welcome);
 app.all("/*", (req, res) => {
   res.status(404).send({ message: "Route not found" });
 });
