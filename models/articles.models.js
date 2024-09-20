@@ -52,7 +52,7 @@ exports.selectArticles = (sort_by, order, topic) => {
   } else {
     queryStr += ` DESC;`;
   }
-  console.log(queryStr);
+
   queryProms.push(db.query(queryStr, queryVals));
 
   return Promise.all(queryProms).then((output) => {
