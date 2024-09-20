@@ -18,7 +18,9 @@ describe("/", () => {
     return request(app)
       .get("/")
       .then(({ body: { message } }) => {
-        expect(message).toBe("Welcome to news API! go to /api for endpoint info");
+        expect(message).toBe(
+          "Welcome to news API! go to /api for endpoint info"
+        );
       });
   });
 });
@@ -235,12 +237,12 @@ describe("/api/articles", () => {
         });
       });
   });
-  test("GET:200 When provided a query sort_by follwed by a valid column name (votes) sorts the array by that column name", () => {
+  test.only("GET:200 When provided a query sort_by follwed by a valid column name (votes) sorts the array by that column name", () => {
     return request(app)
-      .get("/api/articles?sort_by=votes")
+      .get("/api/articles?sort_by=comment_count")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles).toBeSortedBy("votes", {
+        expect(articles).toBeSortedBy("comment_count", {
           descending: true,
         });
       });

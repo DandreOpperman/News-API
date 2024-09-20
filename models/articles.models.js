@@ -32,8 +32,12 @@ exports.selectArticles = (sort_by, order, topic) => {
     " GROUP BY articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url";
 
   if (sort_by) {
-    queryProms.push(checkColumnExists("articles", sort_by));
-    queryStr += ` ORDER BY ${sort_by}`;
+    if (sort_by === "comment_count") {
+      queryStr += ` ORDER BY comment_count`;
+    } else {
+      queryProms.push(checkColumnExists("articles", sort_by));
+      queryStr += ` ORDER BY ${sort_by}`;
+    }
   } else {
     queryStr += ` ORDER BY created_at`;
   }
@@ -48,6 +52,7 @@ exports.selectArticles = (sort_by, order, topic) => {
   } else {
     queryStr += ` DESC;`;
   }
+  console.log(queryStr);
   queryProms.push(db.query(queryStr, queryVals));
 
   return Promise.all(queryProms).then((output) => {
