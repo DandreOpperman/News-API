@@ -237,7 +237,7 @@ describe("/api/articles", () => {
         });
       });
   });
-  test.only("GET:200 When provided a query sort_by follwed by a valid column name (votes) sorts the array by that column name", () => {
+  test("GET:200 When provided a query sort_by follwed by a valid column name (votes) sorts the array by that column name", () => {
     return request(app)
       .get("/api/articles?sort_by=comment_count")
       .expect(200)
