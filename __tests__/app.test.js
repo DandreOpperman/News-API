@@ -302,6 +302,18 @@ describe("/api/articles", () => {
         });
       });
   });
+  test.only("GET:200 if multiple valid querys are present, the articles array should be filtered sorted and ordered correctly", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=votes&order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(12);
+        expect(articles).toBeSortedBy("votes");
+        articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
   test("GET:404 if topic query is present with an invalid topic, should return an appropriate status and error message", () => {
     return request(app)
       .get("/api/articles?topic=11111")
