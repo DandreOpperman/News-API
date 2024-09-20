@@ -302,7 +302,7 @@ describe("/api/articles", () => {
         });
       });
   });
-  test.only("GET:200 if multiple valid querys are present, the articles array should be filtered sorted and ordered correctly", () => {
+  test("GET:200 if multiple valid querys are present, the articles array should be filtered sorted and ordered correctly", () => {
     return request(app)
       .get("/api/articles?topic=mitch&sort_by=votes&order=asc")
       .expect(200)
