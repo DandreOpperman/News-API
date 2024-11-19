@@ -54,7 +54,7 @@ exports.selectArticles = (sort_by, order, topic) => {
   }
 
   queryProms.push(db.query(queryStr, queryVals));
-  console.log(queryStr);
+
   return Promise.all(queryProms).then((output) => {
     if (output[0] === undefined) {
       if (output[1] === undefined) {

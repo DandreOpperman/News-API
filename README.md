@@ -13,7 +13,7 @@ Thank you for taking the time to view my News API. The purpose of this API is ac
 - Model view controller (MVC)
 - PostgreSQL
 - Fs/promises
-- Hosting using supabase for the database and render for the website
+- Hosting using supabase for the database and render for the API
 
 ### Access online
 
@@ -33,7 +33,7 @@ To interact with this api locally you will need to carry out the following instr
 
 3. Next in the root of the repository create two files, one called .env.test and one called .env.development. In the .env.test file on line one type `PGDATABASE=nc_news_test` and in the .env.development file on line one type `DATABASE_URL=nc_news`
 
-4. next you will need to install the dependencies with following command: `git i` . Doing so will install these dependencies:
+4. next you will need to install the dependencies with following command: `npm install` . Doing so will install these dependencies:
 
 - express
 - dotenv
@@ -43,7 +43,7 @@ To interact with this api locally you will need to carry out the following instr
 - jest sorted
 - supertest
 
-5. initialise the database by running `npm run setup-db`
+5. initialise the database by running `npm run setup-dbs`
 
 6. seed the database by running `npm run seed`
 
@@ -51,4 +51,4 @@ To interact with this api locally you will need to carry out the following instr
 
 ### Contact
 
-If you have any questions or would like to give any feedback please send a message to my email address: ---
+If you have any questions or would like to give any feedback please send a message to my email address: dandreopperman@gmail.com
